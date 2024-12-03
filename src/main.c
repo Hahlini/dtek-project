@@ -44,6 +44,7 @@ void movePlayer(int direction);
 void describeRoom();
 void pickUpWeapon();
 void readSwitches();
+Room *get_room();
 
 int main()
 {
@@ -83,31 +84,32 @@ void initGame() {
     strcpy(map[0][0].description, "start");
     map[0][0].exits [0] = 0; map[0][0].exits [1] = 1; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
 
-    strcpy(map[0][1].description, "description");
-    map[0][1].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[0][1].description, "1");
+    map[0][1].exits [0] = 0; map[0][1].exits [1] = 0; map[0][1].exits [2] = 0; map[0][1].exits [3] = 0;
     map[0][1].hasEnemy = 1;
 
-    strcpy(map[0][2].description, "description");
-    map[0][2].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[0][2].description, "2");
+    map[0][2].exits [0] = 0; map[0][2].exits [1] = 0; map[0][2].exits [2] = 0; map[0][2].exits [3] = 0;
     map[0][2].roomWeapon = (Weapon){"Candy Cane", "Red", 5};
 
     strcpy(map[1][0].description, "second");
-    map[1][0].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    map[1][0].exits [0] = 0; map[1][0].exits [1] = 0; map[1][0].exits [2] = 0; map[1][0].exits [3] = 0;
+    map[0][1].roomWeapon = (Weapon){"Sword", "Grey", 10};
 
-    strcpy(map[1][1].description, "description");
-    map[1][1].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[1][1].description, "3");
+    map[1][1].exits [0] = 0; map[1][1].exits [1] = 0; map[1][1].exits [2] = 0; map[1][1].exits [3] = 0;
 
-    strcpy(map[1][2].description, "description");
-    map[1][2].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[1][2].description, "4");
+    map[1][2].exits [0] = 0; map[1][2].exits [1] = 0; map[1][2].exits [2] = 0; map[1][2].exits [3] = 0;
 
-    strcpy(map[2][0].description, "description");
-    map[2][0].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[2][0].description, "5");
+    map[2][0].exits [0] = 0; map[2][0].exits [1] = 0; map[2][0].exits [2] = 0; map[2][0].exits [3] = 0;
 
-    strcpy(map[2][1].description, "description");
-    map[2][1].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[2][1].description, "6");
+    map[2][1].exits [0] = 0; map[2][1].exits [1] = 0; map[2][1].exits [2] = 0; map[2][1].exits [3] = 0;
 
-    strcpy(map[2][2].description, "description");
-    map[2][2].exits [0] = 0; map[0][0].exits [1] = 0; map[0][0].exits [2] = 0; map[0][0].exits [3] = 0;
+    strcpy(map[2][2].description, "7");
+    map[2][2].exits [0] = 0; map[2][2].exits [1] = 0; map[2][2].exits [2] = 0; map[2][2].exits [3] = 0;
 
     describeRoom();
 }
@@ -125,10 +127,10 @@ void movePlayer (int direction) {
     int newY = player.posY;
 
     switch(direction) {
-        case 0: newX--; break; //Up
-        case 1: newY++; break; //Right
-        case 2: newX++; break; //Down
-        case 3: newY--; break; //Down
+        case 0: newY++; break; //Up
+        case 1: newX++; break; //Right
+        case 2: newY--; break; //Down
+        case 3: newX--; break; //Left
         default:
             printf("Invalid dir");
             return;
@@ -141,20 +143,33 @@ void movePlayer (int direction) {
     if (map[player.posX][player.posY].hasEnemy) {
         //startCombat(&player);
     }
+    describeRoom();
 }
 
 
 void describeRoom() {
     // Get the current room description and print it
-    Room currentRoom = map[player.posX][player.posY];
-    printf("Room description: %s\n", currentRoom.description);
+    Room *currentRoom = get_room();
+    printf("Room description: %s\n", currentRoom->description);
+
+    //Funkar inte, ska testa att ändra pointers eller något
+    //If room has weapon
+    if (strcmp(currentRoom->roomWeapon.name, "") != 0){
+        printf("hej");
+        printf("There is a %s\n in the room", currentRoom->roomWeapon.name);
+    }
+
 }
 
 void pickUpWeapon() {
-    Room *currentRoom = &map[player.posX][player.posY];
-    if (strlen(currentRoom->roomWeapon.name) == 0){
+    //If has weapon
+    if (strcmp(get_room()->roomWeapon.name, "") != 0 ){
         
     }
+}
+
+Room *get_room() {
+    return &map[player.posX][player.posY];
 }
 
 int get_sw (void){
